@@ -247,3 +247,14 @@
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 
 .n1-header, .n1-hero, .n1-footer, .n1-inner-page, .n1-categories, .n1-featured, .n1-benefits {font-family:var(--font-inter),Arial,sans-serif}
+
+/* Verified manufacturer configurations */
+.n1-spec-group{margin-top:26px}
+.n1-spec-group h3{font-size:13px;color:#aeb1ba;font-weight:600;margin:0 0 12px}
+.n1-spec-options{display:flex;flex-wrap:wrap;gap:8px}
+.n1-spec-options span{padding:9px 13px;border:1px solid #42454d;border-radius:8px;background:#191a1f;color:#e7e8eb;font-size:12px}
+.n1-spec-list{border-top:1px solid #303239}
+.n1-spec-list>div{display:flex;justify-content:space-between;gap:18px;border-bottom:1px solid #303239;padding:12px 0;font-size:12px}
+.n1-spec-list dt{color:#999ca5}.n1-spec-list dd{color:#f2f2f4;text-align:right;margin:0}
+.n1-spec-source{display:inline-block;color:#bfc4ce;text-decoration:underline;text-underline-offset:4px;font-size:12px;margin-top:22px}
+.n1-spec-source:hover{color:#fff}
