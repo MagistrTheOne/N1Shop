@@ -1,13 +1,23 @@
 import "server-only";
 import { createNeonAuth } from "@neon/auth/next/server";
 
-const baseUrl = process.env.NEON_AUTH_BASE_URL;
-const cookieSecret = process.env.NEON_AUTH_COOKIE_SECRET;
+let authInstance: ReturnType<typeof createNeonAuth> | undefined;
 
-if (!baseUrl) throw new Error("NEON_AUTH_BASE_URL is missing");
-if (new URL(baseUrl).protocol !== "https:") throw new Error("NEON_AUTH_BASE_URL must use HTTPS");
-if (!cookieSecret || cookieSecret.length < 32) {
-  throw new Error("NEON_AUTH_COOKIE_SECRET must contain at least 32 characters");
+export function hasNeonAuthConfig() {
+  const baseUrl = process.env.NEON_AUTH_BASE_URL;
+  const cookieSecret = process.env.NEON_AUTH_COOKIE_SECRET;
+  if (!baseUrl || !cookieSecret || cookieSecret.length < 32) return false;
+  try { return new URL(baseUrl).protocol === "https:"; }
+  catch { return false; }
 }
 
-export const auth = createNeonAuth({ baseUrl, cookies: { secret: cookieSecret } });
+export function getAuth() {
+  if (authInstance) return authInstance;
+  const baseUrl = process.env.NEON_AUTH_BASE_URL;
+  const cookieSecret = process.env.NEON_AUTH_COOKIE_SECRET;
+  if (!baseUrl || !cookieSecret || cookieSecret.length < 32 || !hasNeonAuthConfig()) {
+    throw new Error("Neon Auth environment is not configured");
+  }
+  authInstance = createNeonAuth({ baseUrl, cookies: { secret: cookieSecret } });
+  return authInstance;
+}

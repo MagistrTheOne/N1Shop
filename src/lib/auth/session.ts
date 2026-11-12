@@ -1,8 +1,12 @@
 import "server-only";
-import { auth } from "./server";
+import { getAuth } from "./server";
 
 export async function getCurrentUser() {
-  const { data, error } = await auth.getSession();
-  if (error) return null;
-  return data?.user ?? null;
+  try {
+    const { data, error } = await getAuth().getSession();
+    if (error) return null;
+    return data?.user ?? null;
+  } catch {
+    return null;
+  }
 }

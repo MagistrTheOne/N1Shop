@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/session";
+import { isSameOriginRequest } from "@/lib/auth/request-security";
 import { addCartItem, getUserCart, removeCartItem } from "@/lib/db/queries/carts";
 
 export const runtime = "nodejs";
@@ -20,6 +21,7 @@ export async function GET() {
 export async function POST(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: privateHeaders });
+  if (!isSameOriginRequest(request)) return NextResponse.json({ error: "Forbidden" }, { status: 403, headers: privateHeaders });
   let body: unknown;
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request" }, { status: 400 }); }
   if (!body || typeof body !== "object") return NextResponse.json({ error: "Invalid request" }, { status: 400 });
@@ -38,6 +40,7 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: privateHeaders });
+  if (!isSameOriginRequest(request)) return NextResponse.json({ error: "Forbidden" }, { status: 403, headers: privateHeaders });
   const variantId = new URL(request.url).searchParams.get("productVariantId");
   if (!variantId || !UUID.test(variantId)) return NextResponse.json({ error: "Invalid cart item" }, { status: 400 });
   try {

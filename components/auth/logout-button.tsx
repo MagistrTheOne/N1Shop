@@ -7,11 +7,20 @@ import { authClient } from "@/lib/auth/client";
 export function LogoutButton() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
   async function logout() {
+    if (busy) return;
     setBusy(true);
-    const { error } = await authClient.signOut();
-    if (!error) { router.replace("/login"); router.refresh(); }
-    else setBusy(false);
+    setError("");
+    try {
+      const result = await authClient.signOut();
+      if (result.error) throw result.error;
+      router.replace("/login");
+      router.refresh();
+    } catch {
+      setError("Не удалось завершить сеанс. Попробуйте ещё раз.");
+      setBusy(false);
+    }
   }
-  return <button className="n1-button n1-button-white" onClick={logout} disabled={busy}>{busy ? "Выходим…" : "Выйти"}</button>;
+  return <div>{error && <p className="n1-auth-error" role="alert">{error}</p>}<button className="n1-button n1-button-white" onClick={logout} disabled={busy}>{busy ? "Выходим…" : "Выйти"}</button></div>;
 }

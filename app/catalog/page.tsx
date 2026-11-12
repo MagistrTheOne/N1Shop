@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description: "Каталог N1: iPhone, Mac, iPad, Apple Watch, AirPods и аксессуары.",
 };
 
-export default function Page() {
-  return <CatalogPage />;
+export default async function Page({ searchParams }: { searchParams: Promise<{ category?: string | string[] }> }) {
+  const { category } = await searchParams;
+  return <CatalogPage initialCategory={typeof category === "string" ? category : undefined} />;
 }

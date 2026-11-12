@@ -17,10 +17,19 @@ function useCart() {
   const [count, setCount] = useState(0);
   useEffect(() => {
     let active = true;
-    fetch("/api/cart", { cache: "no-store" }).then(response => response.ok ? response.json() : null).then(data => {
-      if (active && Array.isArray(data?.items)) setCount(data.items.reduce((total: number, item: {quantity?:number}) => total + (Number.isSafeInteger(item.quantity) ? item.quantity! : 0), 0));
+    const refresh = () => fetch("/api/cart", { cache: "no-store" }).then(response => response.ok ? response.json() : null).then(data => {
+      if (active) setCount(Array.isArray(data?.items) ? data.items.reduce((total: number, item: {quantity?:number}) => total + (Number.isSafeInteger(item.quantity) ? item.quantity! : 0), 0) : 0);
     }).catch(() => undefined);
-    return () => { active = false; };
+    void refresh();
+    window.addEventListener("focus", refresh);
+    window.addEventListener("n1-cart-change", refresh);
+    window.addEventListener("storage", refresh);
+    return () => {
+      active = false;
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener("n1-cart-change", refresh);
+      window.removeEventListener("storage", refresh);
+    };
   }, []);
   return { count };
 }
@@ -146,8 +155,7 @@ export function HomePage() {
 }
 export function CatalogPage({initialCategory}: {initialCategory?: string}) {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState(initialCategory || "all");
-  useEffect(() => { const next = new URLSearchParams(window.location.search).get("category"); if (next && categories.some(c => c.slug === next)) setCategory(next); }, []);
+  const [category, setCategory] = useState(() => initialCategory && categories.some(c => c.slug === initialCategory) ? initialCategory : "all");
   const [sort, setSort] = useState("default");
   const filtered = useMemo(() => {
     const result = products.filter(p => (category === "all" || p.category === category) && p.name.toLowerCase().includes(query.toLowerCase()));

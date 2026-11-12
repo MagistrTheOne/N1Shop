@@ -271,6 +271,7 @@
 .n1-password-field button{position:absolute;right:0;top:0;height:46px;width:46px;display:grid;place-items:center;color:#aeb0b8}
 .n1-password-field button:hover{color:#fff}
 .n1-auth-form button{width:100%;margin-top:4px}
+.n1-auth-form .n1-password-field button{width:46px;margin-top:0}
 .n1-auth-error,.n1-auth-notice{font-size:13px;line-height:1.5;margin:0}
 .n1-auth-error{color:#ff9898}.n1-auth-notice{color:#b9e4c3}
 .n1-auth-links{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:22px;font-size:13px;color:#c8c9cd}
