@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# N1 Store
 
-## Getting Started
+Dark, premium, Russian-language Apple product reseller storefront. Built with Next.js App Router, React, TypeScript, Tailwind CSS v4 and the project's installed shadcn/ui library.
 
-First, run the development server:
+## Run
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Routes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `/` — landing page with full-bleed hero, category tiles, featured collection, information strip and footer.
+- `/catalog` — searchable, sortable local catalog with category filters.
+- `/product/[slug]` — product detail and add-to-demo-cart.
+- `/cart` — locally persisted cart.
+- `/delivery`, `/warranty`, `/returns`, `/contacts`, `/legal` — pre-launch information.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Current phase
 
-## Learn More
+**Frontend prototype only.** All devices are original CSS illustrations, not photos. Inventory, prices, product variants, checkout, payment, customer accounts, and delivery integration have not been connected. No real availability, warranty or reseller authorization claims are made. Add seller-verified catalog data before public launch. See `Design.md`, `ASSET_LICENSES.md`, and `THIRD_PARTY_NOTICES.md`.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The legal terms and source license must be approved by the actual rights holder/merchant before production.
