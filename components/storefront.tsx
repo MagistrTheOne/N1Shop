@@ -165,6 +165,7 @@ export function HomePage() {
 export function CatalogPage({initialCategory}: {initialCategory?: string}) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState(initialCategory || "all");
+  useEffect(() => { const next = new URLSearchParams(window.location.search).get("category"); if (next && categories.some(c => c.slug === next)) setCategory(next); }, []);
   const [sort, setSort] = useState("default");
   const filtered = useMemo(() => {
     const result = products.filter(p => (category === "all" || p.category === category) && p.name.toLowerCase().includes(query.toLowerCase()));
