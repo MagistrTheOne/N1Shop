@@ -115,7 +115,7 @@ function Hero() {
   const advance = (delta: number) => setIndex(v => (v + delta + slides.length) % slides.length);
   return <section className="n1-hero" aria-label="Главная коллекция">
     <div className="n1-hero-light"/><div className="n1-hero-orbit"/>
-    <div className={"n1-hero-device n1-hero-" + s.type}>{index === 0 ? <Image src="/images/products/iphone-18-pro.svg" alt="Концептуальная иллюстрация iPhone 18 Pro" fill priority sizes="(max-width: 640px) 90vw, 48vw" style={{objectFit:"contain"}}/> : <DeviceArt shape={s.type} large/>}</div>
+    <div className={"n1-hero-device n1-hero-" + s.type}>{index === 0 ? <Image src="/images/products/iphone-18-pro.webp" alt="iPhone 18 Pro" fill priority unoptimized sizes="(max-width: 640px) 90vw, 48vw" onError={e => {e.currentTarget.src="/images/products/iphone-18-pro.svg";}} style={{objectFit:"contain"}}/> : <DeviceArt shape={s.type} large/>}</div>
     <div className="n1-container n1-hero-content">
       <span className="n1-hero-label">{s.label}</span><h1>{s.title}</h1><p>{s.description}</p>
       <div className="n1-hero-ctas"><Link className="n1-button n1-button-white" href={s.href}>В каталог <ArrowRight size={18}/></Link><Link className="n1-button n1-button-outline" href="/catalog">Подробнее</Link></div>
@@ -123,7 +123,7 @@ function Hero() {
     </div>
     <button className="n1-hero-arrow n1-hero-prev" aria-label="Предыдущий слайд" onClick={() => advance(-1)}><ArrowLeft/></button>
     <button className="n1-hero-arrow n1-hero-next" aria-label="Следующий слайд" onClick={() => advance(1)}><ArrowRight/></button>
-    <span className="n1-hero-caption">Концептуальная иллюстрация · Фото товаров будут добавлены позже</span>
+    <span className="n1-hero-caption"></span>
   </section>;
 }
 
@@ -132,21 +132,21 @@ function CategoryStrip() {
     <div className="n1-section-heading"><h2>Каталог</h2><Link href="/catalog">Весь каталог <ArrowRight size={17}/></Link></div>
     <div className="n1-category-grid">{categories.map(c => <Link className="n1-category-tile" href={"/catalog?category=" + c.slug} key={c.slug}>
       <span className="n1-category-title">{c.name}</span><span className="n1-category-arrow"><ArrowRight size={19}/></span>
-      <div className="n1-category-art">{c.slug === "iphone" ? <Image src="/images/products/iphone-18-pro.svg" alt="" fill sizes="180px" style={{objectFit:"contain"}}/> : <DeviceArt shape={c.shape} tone={c.tone}/>}</div>
+      <div className="n1-category-art">{c.slug === "iphone" ? <Image src="/images/products/iphone-18-pro.svg" alt="" fill unoptimized sizes="180px" onError={e => {e.currentTarget.src="/images/products/iphone-18-pro.svg";}} style={{objectFit:"contain"}}/> : <DeviceArt shape={c.shape} tone={c.tone}/>}</div>
     </Link>)}</div>
   </section>;
 }
 export function ProductCard({product}: {product: Product}) {
   return <article className="n1-product-card"><Link href={"/product/" + product.slug} aria-label={"Подробнее: " + product.name}>
-    <div className="n1-product-art">{product.category === "iphone" ? <Image src={"/images/products/" + product.slug + ".svg"} alt={"Иллюстрация " + product.name} fill sizes="(max-width:640px) 50vw, 25vw" style={{objectFit:"contain"}}/> : <DeviceArt shape={product.shape} tone={product.tone}/>}<span>Концепт</span></div>
-    <div className="n1-product-copy"><small>{product.label}</small><h3>{product.name}</h3><p>{product.detail}</p><div><strong>{formatRub(product.price)}</strong><span className="n1-product-arrow"><ArrowRight size={17}/></span></div></div>
+    <div className="n1-product-art">{product.category === "iphone" ? <Image src={"/images/products/" + product.slug + ".webp"} alt={product.name} fill unoptimized sizes="(max-width:640px) 50vw, 25vw" onError={e => {e.currentTarget.src="/images/products/" + product.slug + ".svg";}} style={{objectFit:"contain"}}/> : <DeviceArt shape={product.shape} tone={product.tone}/>}</div>
+    <div className="n1-product-copy"><small>{product.label}</small><h3>{product.name}</h3><p>{product.detail}</p><div>{product.price !== null && <strong>{formatRub(product.price)}</strong>}<span className="n1-product-arrow"><ArrowRight size={17}/></span></div></div>
   </Link></article>;
 }
 function Featured() {
   return <section className="n1-container n1-featured">
     <div className="n1-section-heading"><div><span className="n1-kicker">N1 / ПОДБОРКА</span><h2>Техника, которую выбирают</h2></div><Link href="/catalog">Смотреть всё <ArrowRight size={17}/></Link></div>
     <div className="n1-products-grid">{products.filter(p => p.featured).map(p => <ProductCard product={p} key={p.id}/>)}</div>
-    <p className="n1-disclaimer">Демонстрационная витрина: изображения — CSS-макеты, цены и наличие появятся после подтверждения продавцом.</p>
+    <p className="n1-disclaimer">Ассортимент и наличие уточняются.</p>
   </section>;
 }
 function Benefits() {
@@ -176,7 +176,7 @@ export function CatalogPage({initialCategory}: {initialCategory?: string}) {
     <div className="n1-chips"><button className={category === "all" ? "selected" : ""} onClick={() => setCategory("all")}>Все товары</button>{categories.map(c => <button key={c.slug} className={category === c.slug ? "selected" : ""} onClick={() => setCategory(c.slug)}>{c.name}</button>)}</div>
     <p className="n1-result-count">Найдено: {filtered.length}</p>
     {filtered.length ? <div className="n1-products-grid">{filtered.map(p => <ProductCard key={p.id} product={p}/>)}</div> : <div className="n1-empty"><Search size={36}/><h2>Ничего не найдено</h2><p>Измените запрос или категорию.</p><button onClick={() => {setCategory("all");setQuery("");}}>Сбросить фильтры</button></div>}
-    <p className="n1-disclaimer">Товары представлены стилизованными макетами, а не фотографиями реальных экземпляров.</p>
+    <p className="n1-disclaimer">Изображения служат иллюстрацией внешнего вида; комплектации уточняются.</p>
   </main><Benefits/></Shell>;
 }
 export function ProductPage({product}: {product: Product}) {
@@ -185,8 +185,8 @@ export function ProductPage({product}: {product: Product}) {
   return <Shell><main className="n1-container n1-inner-page">
     <div className="n1-breadcrumbs"><Link href="/">Главная</Link><span>/</span><Link href="/catalog">Каталог</Link><span>/</span><span>{product.name}</span></div>
     <div className="n1-detail">
-      <div className="n1-detail-art">{product.category === "iphone" ? <Image src={"/images/products/" + product.slug + ".svg"} alt={"Иллюстрация " + product.name} fill sizes="(max-width:640px) 100vw, 50vw" style={{objectFit:"contain"}}/> : <DeviceArt shape={product.shape} tone={product.tone} large/>}<span>Концептуальная иллюстрация</span></div>
-      <div className="n1-detail-info"><span className="n1-kicker">{product.label}</span><h1>{product.name}</h1><p>{product.detail}</p><hr/><h2>{formatRub(product.price)}</h2><p>Наличие и конфигурации уточняются.</p>
+      <div className="n1-detail-art">{product.category === "iphone" ? <Image src={"/images/products/" + product.slug + ".svg"} alt={"Иллюстрация " + product.name} fill unoptimized sizes="(max-width:640px) 100vw, 50vw" onError={e => {e.currentTarget.src="/images/products/" + product.slug + ".svg";}} style={{objectFit:"contain"}}/> : <DeviceArt shape={product.shape} tone={product.tone} large/>}</div>
+      <div className="n1-detail-info"><span className="n1-kicker">{product.label}</span><h1>{product.name}</h1><p>{product.detail}</p><hr/>{product.price !== null && <h2>{formatRub(product.price)}</h2>}<p>Наличие и конфигурации уточняются.</p>
       <button className="n1-button n1-button-white" onClick={() => {change(product.id,1);setAdded(true);}}>{added ? "Добавлено в демо-корзину" : "Добавить в демо-корзину"} {added ? <Check size={18}/> : <ShoppingBag size={18}/>}</button>
       <p className="n1-detail-note">Заказ и оплата пока недоступны. Карточка создана для демонстрации дизайна.</p>
       <div className="n1-detail-features"><div><ShieldCheck size={20}/>Проверка перед передачей</div><div><Truck size={20}/>Условия доставки будут опубликованы позже</div></div>
