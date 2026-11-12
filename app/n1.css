@@ -245,3 +245,5 @@
   .n1-cart-item{gap:12px}.n1-mini-art{height:77px;width:77px}.n1-cart-item-copy a{font-size:13px}.n1-counter{gap:8px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+.n1-header, .n1-hero, .n1-footer, .n1-inner-page, .n1-categories, .n1-featured, .n1-benefits {font-family:var(--font-inter),Arial,sans-serif}
