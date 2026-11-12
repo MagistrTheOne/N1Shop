@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft, ArrowRight, Award, Check, ChevronDown, CreditCard, Menu,
@@ -104,7 +105,7 @@ function Shell({children}: {children: React.ReactNode}) {
 }
 
 const slides: {title: string; label: string; description: string; type: Product["shape"]; href: string}[] = [
-  {title:"iPhone Pro", label:"Коллекция Apple", description:"Мощнее. Умнее. Ещё ближе.", type:"phone", href:"/catalog?category=iphone"},
+  {title:"iPhone 18 Pro", label:"Новинка 2026", description:"Мощнее. Умнее. Ещё ближе.", type:"phone", href:"/product/iphone-18-pro"},
   {title:"MacBook Pro", label:"Для больших идей", description:"Работай на своих условиях.", type:"laptop", href:"/catalog?category=mac"},
   {title:"Apple Watch", label:"Каждый день", description:"Важное всегда рядом.", type:"watch", href:"/catalog?category=watch"},
 ];
@@ -114,7 +115,7 @@ function Hero() {
   const advance = (delta: number) => setIndex(v => (v + delta + slides.length) % slides.length);
   return <section className="n1-hero" aria-label="Главная коллекция">
     <div className="n1-hero-light"/><div className="n1-hero-orbit"/>
-    <div className={"n1-hero-device n1-hero-" + s.type}><DeviceArt shape={s.type} large/></div>
+    <div className={"n1-hero-device n1-hero-" + s.type}>{index === 0 ? <Image src="/images/products/iphone-18-pro.svg" alt="Концептуальная иллюстрация iPhone 18 Pro" fill priority sizes="(max-width: 640px) 90vw, 48vw" style={{objectFit:"contain"}}/> : <DeviceArt shape={s.type} large/>}</div>
     <div className="n1-container n1-hero-content">
       <span className="n1-hero-label">{s.label}</span><h1>{s.title}</h1><p>{s.description}</p>
       <div className="n1-hero-ctas"><Link className="n1-button n1-button-white" href={s.href}>В каталог <ArrowRight size={18}/></Link><Link className="n1-button n1-button-outline" href="/catalog">Подробнее</Link></div>
@@ -131,13 +132,13 @@ function CategoryStrip() {
     <div className="n1-section-heading"><h2>Каталог</h2><Link href="/catalog">Весь каталог <ArrowRight size={17}/></Link></div>
     <div className="n1-category-grid">{categories.map(c => <Link className="n1-category-tile" href={"/catalog?category=" + c.slug} key={c.slug}>
       <span className="n1-category-title">{c.name}</span><span className="n1-category-arrow"><ArrowRight size={19}/></span>
-      <div className="n1-category-art"><DeviceArt shape={c.shape} tone={c.tone}/></div>
+      <div className="n1-category-art">{c.slug === "iphone" ? <Image src="/images/products/iphone-18-pro.svg" alt="" fill sizes="180px" style={{objectFit:"contain"}}/> : <DeviceArt shape={c.shape} tone={c.tone}/>}</div>
     </Link>)}</div>
   </section>;
 }
 export function ProductCard({product}: {product: Product}) {
   return <article className="n1-product-card"><Link href={"/product/" + product.slug} aria-label={"Подробнее: " + product.name}>
-    <div className="n1-product-art"><DeviceArt shape={product.shape} tone={product.tone}/><span>3D-макет</span></div>
+    <div className="n1-product-art">{product.category === "iphone" ? <Image src={"/images/products/" + product.slug + ".svg"} alt={"Иллюстрация " + product.name} fill sizes="(max-width:640px) 50vw, 25vw" style={{objectFit:"contain"}}/> : <DeviceArt shape={product.shape} tone={product.tone}/>}<span>Концепт</span></div>
     <div className="n1-product-copy"><small>{product.label}</small><h3>{product.name}</h3><p>{product.detail}</p><div><strong>{formatRub(product.price)}</strong><span className="n1-product-arrow"><ArrowRight size={17}/></span></div></div>
   </Link></article>;
 }
@@ -184,7 +185,7 @@ export function ProductPage({product}: {product: Product}) {
   return <Shell><main className="n1-container n1-inner-page">
     <div className="n1-breadcrumbs"><Link href="/">Главная</Link><span>/</span><Link href="/catalog">Каталог</Link><span>/</span><span>{product.name}</span></div>
     <div className="n1-detail">
-      <div className="n1-detail-art"><DeviceArt shape={product.shape} tone={product.tone} large/><span>Концептуальная иллюстрация</span></div>
+      <div className="n1-detail-art">{product.category === "iphone" ? <Image src={"/images/products/" + product.slug + ".svg"} alt={"Иллюстрация " + product.name} fill sizes="(max-width:640px) 100vw, 50vw" style={{objectFit:"contain"}}/> : <DeviceArt shape={product.shape} tone={product.tone} large/>}<span>Концептуальная иллюстрация</span></div>
       <div className="n1-detail-info"><span className="n1-kicker">{product.label}</span><h1>{product.name}</h1><p>{product.detail}</p><hr/><h2>{formatRub(product.price)}</h2><p>Наличие и конфигурации уточняются.</p>
       <button className="n1-button n1-button-white" onClick={() => {change(product.id,1);setAdded(true);}}>{added ? "Добавлено в демо-корзину" : "Добавить в демо-корзину"} {added ? <Check size={18}/> : <ShoppingBag size={18}/>}</button>
       <p className="n1-detail-note">Заказ и оплата пока недоступны. Карточка создана для демонстрации дизайна.</p>
