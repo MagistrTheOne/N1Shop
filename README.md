@@ -1,24 +1,39 @@
-# N1 Store
+# N1 Shop: Neon database and authentication
 
-Dark, premium, Russian-language Apple product reseller storefront. Built with Next.js App Router, React, TypeScript, Tailwind CSS v4 and the project's installed shadcn/ui library.
+The storefront uses Neon PostgreSQL through the server-only Drizzle client. Neon Managed Better Auth owns credentials and sessions. The application schema contains profiles, carts, and cart items; it does not duplicate authentication tables.
 
-## Run
+## Environment
 
-```bash
-npm ci
-npm run dev
+Keep credentials in the existing ignored `.env` file. The application reads `DATABASE_URL`, `NEON_AUTH_BASE_URL`, and `NEON_AUTH_COOKIE_SECRET` (at least 32 characters). Never prefix these values with `NEXT_PUBLIC_`. `.env.example` is only a names-only template; do not copy over an existing `.env`.
+
+Enable Managed Better Auth on the intended Neon branch and configure email sign-in, verification, password reset email delivery, and the application origin in Neon Console. The auth endpoint and cookie secret must be configured in the local environment before starting the app.
+
+## Drizzle migrations
+
+```powershell
+npm run db:generate
+npm run db:check
+npm run db:migrate
+npm run db:studio
 ```
 
-## Routes
+Review generated SQL before applying it. `DATABASE_URL` in `drizzle.config.ts` is the only migration target; verify that it identifies the intended development branch before running `db:migrate`. The migration history lives in `drizzle/`.
 
-- `/` — landing page with full-bleed hero, category tiles, featured collection, information strip and footer.
-- `/catalog` — searchable, sortable local catalog with category filters.
-- `/product/[slug]` — product detail and add-to-demo-cart.
-- `/cart` — locally persisted cart.
-- `/delivery`, `/warranty`, `/returns`, `/contacts`, `/legal` — pre-launch information.
+For a read-only connectivity check, use `npm run db:smoke`; it executes `SELECT 1` and performs no writes.
 
-## Current phase
+## Authentication routes
 
-**Frontend prototype only.** All devices are original CSS illustrations, not photos. Inventory, prices, product variants, checkout, payment, customer accounts, and delivery integration have not been connected. No real availability, warranty or reseller authorization claims are made. Add seller-verified catalog data before public launch. See `Design.md`, `ASSET_LICENSES.md`, and `THIRD_PARTY_NOTICES.md`.
+- `/login` and `/register` use the official `@neon/auth` Next.js client.
+- `/verify-email` accepts the Managed Better Auth verification code when email-code verification is enabled.
+- `/forgot-password` and `/reset-password` proxy requests to Managed Better Auth.
+- `/account` is protected by Next.js 16 `proxy.ts` and rechecks the session server-side.
+- `/api/profile` and `/api/cart` derive ownership from the server-validated session; they do not accept a profile ID.
+- `/api/neon/health` is a read-only database connectivity endpoint.
 
-The legal terms and source license must be approved by the actual rights holder/merchant before production.
+## Cart catalog boundary
+
+Cart persistence and ownership constraints are ready for UUID `product_variant_id` values. The current storefront catalog has no persisted product-variant IDs, so it deliberately does not add the illustrative products to a customer cart. Existing browser storage is left untouched and is no longer read as an account cart. Checkout is not implemented.
+
+## Verification state
+
+Migration SQL is generated and statically reviewed. No migration was applied, no database query or authentication flow was executed, and no build or test was run as part of the current source implementation.
